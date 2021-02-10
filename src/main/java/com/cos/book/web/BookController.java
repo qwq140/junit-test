@@ -1,5 +1,6 @@
 package com.cos.book.web;
 
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +31,17 @@ public class BookController {
 	}
 	
 	@Transactional(readOnly = true)
+	@GetMapping("/book")
+	public ResponseEntity<?> findAll(){
+		return new ResponseEntity<>(bookRepository.findAll(),HttpStatus.OK);
+	}
+	
+	@Transactional(readOnly = true)
 	@GetMapping("/book/{id}")
 	public ResponseEntity<?> findById(@PathVariable int id){
-		Book bookEntity = bookRepository.findById(id).orElseThrow(()->new IllegalArgumentException("id를 확인해주세요"));
-		return new ResponseEntity<>(bookEntity,HttpStatus.OK);
+		return new ResponseEntity<>(bookRepository.findById(id),HttpStatus.OK);
 	}
+	
 	
 	@Transactional
 	@PutMapping("/book/{id}")

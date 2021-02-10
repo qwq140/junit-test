@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,28 @@ public class BookControllerIntegreTest {
 				.andDo(MockMvcResultHandlers.print());
 
 	}
+	
+	@Test
+	public void findAll_테스트() throws Exception{
+		// given
+		List<Book> books = new ArrayList<>();
+		books.add(new Book(1,"스프링부트", 4.8, 20000));
+		books.add(new Book(2,"리액트", 4.3, 15000));
+		books.add(new Book(3,"JUnit", 4.6, 12000));
+		bookRepository.saveAll(books);
+		
+		// when 
+		ResultActions resultAction = mockMvc.perform(get("/book")
+				.accept(MediaType.APPLICATION_JSON_UTF8));
+		
+		// then
+		resultAction
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$", Matchers.hasSize(3)))
+			.andExpect(jsonPath("$.[0].title").value("스프링부트"))
+			.andDo(MockMvcResultHandlers.print());
+	}
+
 	
 	@Test
 	public void findById_테스트() throws Exception {
